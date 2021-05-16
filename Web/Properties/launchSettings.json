@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Products": {
+    "TodoTemplate": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

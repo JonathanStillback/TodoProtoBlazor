@@ -16,8 +16,8 @@ var jsRoutes = (function()
 {
 	let routes =
 	{
-		"": "js-app/components/start/index.html",
-		"/": "js-app/components/start/index.html",
+		"": "js-app/components/start",
+		"/": "js-app/components/start",
 		"/todos": "js-app/components/todo"
 	};
 	return routes;
@@ -25,7 +25,14 @@ var jsRoutes = (function()
 
 console.log(`jsApp - Location: ${document.location.pathname}`);
 
-fetch(jsRoutes[document.location.pathname], {})
+function getFilePath(path)
+{
+	let slash = path.lastIndexOf("/");
+	let componentName = path.substr(slash+1);
+	return {view: `${path}/${componentName}.html`, script: `${path}/${componentName}.js`}
+}
+
+fetch(getFilePath(jsRoutes[document.location.pathname]).view, {})
 .then(function (response) {
 	// The API call was successful!
 	if (response.ok) {
@@ -42,3 +49,11 @@ fetch(jsRoutes[document.location.pathname], {})
 	// There was an error
 	console.warn('Something went wrong.', err);
 });
+
+var script = document.createElement('script');
+script.onload = function () {
+    //do stuff with the script
+};
+script.src = getFilePath(jsRoutes[document.location.pathname]).script;
+
+document.head.appendChild(script); //or something of the likes

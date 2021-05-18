@@ -32,23 +32,117 @@ function getFilePath(path)
 	return {view: `${path}/${componentName}.html`, script: `${path}/${componentName}.js`}
 }
 
-fetch(getFilePath(jsRoutes[document.location.pathname]).view, {})
-.then(function (response) {
-	// The API call was successful!
-	if (response.ok) {
-		return response.text();
-	} else {
-		return Promise.reject(response);
+class JsAppComponent {
+	constructor()
+	{
+		console.log("JsAppComponent loaded");
+		this._content = "content not fetched";
+		this.getContentFile(this);
 	}
-})
-.then(function (data) {
-	// This is the JSON from our response
-	jsApp.innerHTML = data;
-})
-.catch(function (err) {
-	// There was an error
-	console.warn('Something went wrong.', err);
-});
+
+	async getContentFile(o)
+	{
+		fetch(getFilePath(jsRoutes[document.location.pathname]).view, {})
+		.then(function (response) {
+			if (response.ok) {
+				return response.text();
+			} else {
+				return Promise.reject(response);
+			}
+		})
+		.then(function(data) {
+			o._content = data;
+			o.render();
+		})
+		.catch(function (err) {
+			console.warn('Something went wrong.', err);
+		});
+	}
+	
+	parseContent()
+	{
+		this.parseList();
+		this._content = this.parseInline(this._content, this);
+	}
+
+	parseList()
+	{
+		let matches = this.getMatchAll(this._content, /<(.+) .*jsFor="(.+)".*>(.*)<\/.+>/);
+		console.log(matches);
+		for (let i = 0; i < matches.length; ++i)
+		{
+			let m = matches[i];
+
+			let el = m[1];
+			let model = m[2];
+			let value = m[3];
+			console.log(model);
+			console.log(eval("this."+model));
+			let r = "";
+			for (let k = 0; k < eval("this."+model).length; ++k)
+			{
+				let item = eval("this."+model)[k];
+
+				let parsedValue = this.parseInline(value, item);
+
+				r += `<${el}>${parsedValue}</${el}>`;
+			}
+			this._content = this.replaceAll(this._content, m[0], r);
+		}
+	}
+
+	parseInline(str, container)
+	{
+		let matches = this.getMatchAll(str, /{{(.+)}}/);
+		for (let i = 0; i < matches.length; ++i)
+		{
+			let m = matches[i];
+			str = this.replaceAll(str, m[0], eval("container"+"."+m[1]))
+		}
+		return str;
+	}
+
+	getMatchAll(str, regex)
+	{
+		let matches = [];
+		let m = {};
+		while (m != null)
+		{
+			m = str.match(regex);
+			if (m != null)
+			{
+				let i = 0;
+				while(i > -1)
+				{
+					i = str.indexOf(m[0]);
+					if (i > -1)
+						str = str.replace(m[0],"");
+				}
+
+				matches.push(m);
+			}
+		}
+		return matches;
+	}
+
+	replaceAll(str, search, repl)
+	{
+		let i = 0;
+		while (i > -1)
+		{
+			i = str.indexOf(search);
+			if (i > -1)
+				str = str.replace(search, repl);
+		}
+		return str;
+	}
+
+	render()
+	{
+		this.parseContent();
+		jsApp.innerHTML = this._content;
+	}
+}
 
 var script = document.createElement('script');
 script.onload = function () {

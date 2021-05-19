@@ -9,4 +9,4 @@ class Start extends JsAppComponent
 		this.list = [{word: "some"}, {word: "random"}, {word: "words"}];
 	}
 }
-(function(){const o = new Start();})()
+new Start();

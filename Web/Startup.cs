@@ -48,6 +48,7 @@ namespace Products
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute("Catch all", "{*url}", new {Controller = "Home", Action = "Index"});
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

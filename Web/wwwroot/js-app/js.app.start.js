@@ -23,13 +23,15 @@ var jsRoutes = (function()
 	return routes;
 })();
 
+var jsComponents = {};
+
 console.log(`jsApp - Location: ${document.location.pathname}`);
 
 function getFilePath(path)
 {
 	let slash = path.lastIndexOf("/");
 	let componentName = path.substr(slash+1);
-	return {view: `${path}/${componentName}.html`, script: `${path}/${componentName}.js`}
+	return {view: `${path}/${componentName}.html`, script: `${path}/${componentName}.js`, componentName: componentName};
 }
 
 class JsAppComponent {
@@ -37,7 +39,9 @@ class JsAppComponent {
 	{
 		console.log("JsAppComponent loaded");
 		this._content = "content not fetched";
+		jsComponents[this.constructor.name.toLowerCase()] = this;
 		this.getContentFile(this);
+		this.enableClientRouting();
 	}
 
 	async getContentFile(o)
@@ -68,7 +72,6 @@ class JsAppComponent {
 	parseList()
 	{
 		let matches = this.getMatchAll(this._content, /<(.+) .*jsFor="(.+)".*>(.*)<\/.+>/);
-		console.log(matches);
 		for (let i = 0; i < matches.length; ++i)
 		{
 			let m = matches[i];
@@ -76,8 +79,7 @@ class JsAppComponent {
 			let el = m[1];
 			let model = m[2];
 			let value = m[3];
-			console.log(model);
-			console.log(eval("this."+model));
+
 			let r = "";
 			for (let k = 0; k < eval("this."+model).length; ++k)
 			{
@@ -142,12 +144,42 @@ class JsAppComponent {
 		this.parseContent();
 		jsApp.innerHTML = this._content;
 	}
+
+	static loadComponent()
+	{
+		let comp = jsComponents[getFilePath(jsRoutes[document.location.pathname]).componentName];
+		if (comp)
+		{
+			comp.getContentFile(comp);
+			return;
+		}
+		var script = document.createElement('script');
+		script.onload = function () {
+				//do stuff with the script
+		};
+		script.src = getFilePath(jsRoutes[document.location.pathname]).script;
+		
+		document.head.appendChild(script); //or something of the likes
+	}
+
+	enableClientRouting()
+	{
+		let links = $("a");
+		links.forEach(
+			l =>
+			{
+				l.addEventListener("click",
+				function(e)
+				{
+					e.preventDefault();
+					history.pushState("", "", this.href);
+					JsAppComponent.loadComponent();
+					// console.log("clicked link");
+				});
+			}
+		);
+	}
 }
 
-var script = document.createElement('script');
-script.onload = function () {
-    //do stuff with the script
-};
-script.src = getFilePath(jsRoutes[document.location.pathname]).script;
-
-document.head.appendChild(script); //or something of the likes
+// JsAppComponent.loadComponent();
+JsAppComponent.loadComponent();

@@ -1,5 +1,20 @@
 console.log("Hello World jsApp");
 
+//Polyfill CustomeEvent()
+(function () {
+
+  if ( typeof window.CustomEvent === "function" ) return false;
+
+  function CustomEvent ( event, params ) {
+    params = params || { bubbles: false, cancelable: false, detail: null };
+    var evt = document.createEvent( 'CustomEvent' );
+    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+    return evt;
+   }
+
+  window.CustomEvent = CustomEvent;
+})();
+
 var $ = document.querySelectorAll;
 var $ = document.querySelectorAll.bind(document);
 

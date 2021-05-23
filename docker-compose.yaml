@@ -1,0 +1,91 @@
+version: '3'
+services:
+    dotnet:
+        # image: mcr.microsoft.com/dotnet/sdk:5.0
+        build: ./docker
+        restart: always
+        ports:
+            # - 12000:5000
+            # - 12001:5001
+            - 12000:5000
+            - 12001:5001
+        labels:
+            - traefik.enable=true
+
+            # TK: WP-Tema
+            - traefik.http.routers.todos.rule=Host(`todos.localhost`)
+            # - traefik.http.middlewares.todos1.replacepathregex.regex=^(/WP-Tema)+(.*)$$
+            # - traefik.http.middlewares.todos1.replacepathregex.replacement=$$2
+            # - traefik.http.middlewares.todos2.addprefix.prefix=/WP-Tema
+            # - traefik.http.middlewares.todos.chain.middlewares=todos1,todos2
+            # - traefik.http.routers.todos.middlewares=todos
+            - traefik.http.routers.todos.entrypoints=web
+            # - traefik.http.routers.todos.entrypoints=secure
+
+        environment: 
+            # - ASPNETCORE_URLS=https://+:443;http://+:80;https://+:5000;https://+:5001;
+            - ASPNETCORE_URLS=https://+:443;http://+:80;http://+:5000;https://+:5001;
+
+        networks:
+            - backend
+        volumes:
+            - .:/app
+        # depends_on:
+        #     - php
+        #     - db
+
+    # db:
+    #     # build: './mysql'
+    #     image: "mariadb:10.5.5"
+    #     restart: always
+    #     environment:
+    #         MYSQL_ROOT_PASSWORD: rootpass
+    #     networks:
+    #         - backend
+    #     volumes:
+    #         - ./docker/db/volumes/databases:/var/lib/mysql
+
+    # phpmyadmin:
+    #     image: phpmyadmin
+    #     restart: always
+    #     ports:
+    #         - 11113:80
+    #     labels:
+    #         - traefik.enable=true
+    #         - traefik.http.routers.phpmyadmin.rule=Host(`mysql.localhost`)
+    #         - traefik.http.routers.phpmyadmin.entrypoints=web
+    #     environment:
+    #         - PMA_ARBITRARY=1
+    #         - PMA_HOST=db
+    #     networks:
+    #         - frontend
+    #         - backend
+    #     volumes:
+    #         - ./docker/php/volumes/ini/php.ini:/usr/local/etc/php/php.ini
+    #     depends_on: 
+    #         - db
+
+    # traefik:
+    #     # image: traefik:v2.0-alpine
+    #     build: ./docker/traefik
+    #     restart: always
+    #     ports:
+    #         - 80:80
+    #         - 443:443
+    #         - 8085:8085
+    #     labels: 
+    #         # - --providers.docker=true
+    #         # - --providers.docker.exposedbydefault=false
+    #         # - --api.insecure=true
+    #         # - --api.dashboard=true
+    #         - traefik.enable=true
+    #         - traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)
+    #         - traefik.http.routers.api.service=api@internal
+    #         - traefik.http.routers.api.entrypoints=traefik
+    #     volumes:
+    #         - /var/run/docker.sock:/var/run/docker.sock
+    #     networks:
+    #         - backend
+    #         - frontend
+networks:
+    backend:

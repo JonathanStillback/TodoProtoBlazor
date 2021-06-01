@@ -5,7 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Products.Models;
+using Models;
+using Products.ViewModels;
 
 namespace Products.Controllers
 {
@@ -20,7 +21,11 @@ namespace Products.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var todos = new TodoModel();
+            todos.Todos = new List<Todo>();
+            todos.Todos.Add(new Todo() { Name="Test", Description="Cool first task", Status=TodoStatus.New });
+            todos.Todos.Add(new Todo() { Name="Second", Description="Cool second task", Status=TodoStatus.Started });
+            return View(todos);
         }
 
         public IActionResult Privacy()

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model TodoModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -10,11 +11,13 @@
         <a href="/todos">todo</a>
     </div>
 
-    <app></app>
+    @* <app></app> *@
+
+    <component type="typeof(Todo)" render-mode="ServerPrerendered" param-TodoModel="Model"></component>
 
 </div>
 
 @section Scripts
 {
-    <script src="js-app/js.app.start.js"></script>
+    @* <script src="js-app/js.app.start.js"></script> *@
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models;
-using Products.Models;
+using Products.ViewModels;
 
 namespace Products.Controllers
 {

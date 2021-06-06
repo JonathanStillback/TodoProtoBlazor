@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Configurations;
+using System.Reflection;
 
-namespace Products
+namespace Web
 {
     public class Program
     {
@@ -15,12 +17,12 @@ namespace Products
         {
             CreateHostBuilder(args).Build().Run();
         }
-
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>() 
+                    .UseSetting(WebHostDefaults.ApplicationKey, typeof(Program).GetTypeInfo().Assembly.FullName); // Ignore the startup class assembly as the "entry point" and instead point it to this app;
                 });
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using Microsoft.Data.Sqlite;
 using System.Reflection;
 using Dapper;
-using Interfaces;
+using Models;
 
 namespace Implementations
 {
@@ -207,22 +207,6 @@ namespace Implementations
                 return "''";
             }
         }
-
-        // public List<T> Get(Where where)
-        // {
-        //     var conn = Db.Connection();
-        //     return new List<T>();
-        // }
-        // public T Update(T item, Where where, UpdateItem update)
-        // { 
-        //     item = update.Invoke(item);
-        //     return item;
-        // }
-        // public bool Delete(T item, Where where)
-        // {
-        //     var cool = where(item);
-        //     return false;
-        // }
 
         protected IDbConnection Connection()
         {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Models;
 
-namespace Interfaces
+namespace Models
 {
     public interface IDBProvider<T>
     {

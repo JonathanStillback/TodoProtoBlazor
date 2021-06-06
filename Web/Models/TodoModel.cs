@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Models;
 
-namespace Products.ViewModels
+namespace Web.ViewModels
 {
     public class TodoModel
     {
-			public List<Todo> Todos {get; set;}
+        public List<Todo> Todos {get; set;}
     }
 }

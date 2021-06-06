@@ -1,0 +1,22 @@
+@namespace Web.Components
+@using Microsoft.AspNetCore.Components.Forms;
+@using Web.Components;
+
+<h2>Todolist</h2>
+
+<input type="button" @onclick="CreateTodo" value="Add" />
+
+<ul class="tasklist">
+@for (var i = 0; i<TodoModel.Todos.Count; ++i)
+{
+	<li>
+		<TodoItem @bind-Todo="@TodoModel.Todos[i]" />
+	</li>
+}
+</ul>
+
+Info: @hello
+
+@code {
+
+}

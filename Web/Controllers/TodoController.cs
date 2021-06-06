@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Models;
-using Products.ViewModels;
+using Web.ViewModels;
 
-namespace Products.Controllers
+namespace Web.Controllers
 {
     [Route("api/{controller}/{action}")]
     public class TodoController : Controller

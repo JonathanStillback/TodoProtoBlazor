@@ -1,0 +1,30 @@
+@namespace Web.Components
+<ul>
+	<li>@Todo.Name</li>
+	<li>@Todo.Description</li>
+	<li>
+		<select value="@((int)Todo.Status)" @onchange="@(e => {OnTodoStatusChanged(e,Todo);})">
+			@foreach (int val in Enum.GetValues<Models.TodoStatus>())
+			{
+				<option value="@val">@((Models.TodoStatus)val)</option>
+			}
+		</select>
+	</li>
+</ul>
+@code {
+	[Parameter]	public Models.Todo Todo {get; set;}
+	[Parameter] public EventCallback<Models.Todo> TodoChanged { get; set; }
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+	}
+
+	private void OnTodoStatusChanged(ChangeEventArgs e, Models.Todo todo)
+	{
+		Todo.Status = (Models.TodoStatus)Convert.ToInt32(e.Value);
+		TodoChanged.InvokeAsync(Todo);
+		Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status}");
+	}
+
+}

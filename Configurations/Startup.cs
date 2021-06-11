@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Models;
+using Proto;
+using Proto.DependencyInjection;
+using Proto.Extensions;
 
 namespace Configurations
 {
@@ -26,6 +29,9 @@ namespace Configurations
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IDBProvider<Todo>, SqliteDBProvider<Todo>>();
+            services.AddSingleton(serviceProvider => new ActorSystem().WithServiceProvider(serviceProvider));
+            services.AddSingleton<IProtoHelper, ProtoHelper>();
+            // services.AddTransient<TodoActor>();
 
             services.AddControllersWithViews();
             services.AddServerSideBlazor();

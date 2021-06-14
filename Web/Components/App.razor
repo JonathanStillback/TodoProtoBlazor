@@ -1,0 +1,11 @@
+@namespace Web.Components
+<Router AppAssembly="@typeof(Program).Assembly">
+    @* AdditionalAssemblies="new[] { typeof(Web.Components.TodoUpdate).Assembly }" *@
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        @* DefaultLayout="@typeof(_Layout)" *@
+    </Found>
+    <NotFound>
+        <p>Sorry, there's nothing at this address.</p>
+    </NotFound>
+</Router>

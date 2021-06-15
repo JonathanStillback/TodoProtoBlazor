@@ -11,27 +11,21 @@ namespace Implementations
 		//should be processed
 		public Task ReceiveAsync(IContext context)
 		{
-			//the message we received
-			var msg = context.Message;
-			//match message based on type
-			if (msg is Todo todo)
+			switch (context.Message)
 			{
-				Console.WriteLine($"Proto handling todo: {todo.Name}, but changing name");
-				todo.Name = "Proto " + todo.Name;
-				context.Respond(todo);
-			}
+				case Todo todo:
+					Console.WriteLine($"Proto handling todo: {todo.Name}, but changing name");
+					todo.Name = "Proto " + todo.Name;
+					context.Respond(todo);
+				break;
+				case DBEntityMessage m when m.Entity is Todo t && m.dbChange == DBChange.Create:
+					Console.WriteLine("Handled by Proto todo create");
+					context.Respond(t);
+				break;
+			};
 			return Task.CompletedTask;
 		}
 
-		public static void HandleTodoByActor(Todo todo)
-		{
-
-			var system = new Proto.ActorSystem();
-			var context = system.Root;
-			var props = Proto.Props.FromProducer(() => new TodoActor());
-			var pid = context.Spawn(props);
-			context.Send(pid, todo);
-		}
 
 		// public record TestRec(int cool, string yeah);
 	}

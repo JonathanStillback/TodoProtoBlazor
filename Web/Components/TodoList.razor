@@ -2,9 +2,13 @@
 @using Microsoft.AspNetCore.Components.Forms;
 @using Web.Components;
 
+@page "/"
+
 <h2>Todolist</h2>
 
 <input type="button" @onclick="CreateTodo" value="Add" />
+
+<a href="/todo/create">Add Todo</a>
 
 <ul class="tasklist">
 @for (var i = 0; i<TodoModel.Todos.Count; ++i)

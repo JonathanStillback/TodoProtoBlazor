@@ -21,14 +21,14 @@ namespace Implementations
 		
 		public Task ReceiveAsync(IContext context)
 		{
+			PID pid;
 			switch(context.Message)
 			{
-				case Todo t:
-					var props = Props.FromProducer(() => new TodoActor());
-					var pid = context.Spawn(props);
+				case Todo todoPlain:
+					pid = context.Spawn(Props.FromProducer(() => new TodoActor()));
 					if (_isRequest)
 					{
-						context.ReenterAfter(context.RequestAsync<Todo>(pid, t), task => {
+						context.ReenterAfter(context.RequestAsync<Todo>(pid, todoPlain), task => {
 							context.Respond(task.Result);
 							return Task.CompletedTask;
 						});
@@ -36,7 +36,15 @@ namespace Implementations
 					else
 						context.Forward(pid);
 				break;
-				case CreateEntity<Todo> t:
+				case DBEntityMessage m:
+					if (m.Entity is Todo todo)
+					{
+						pid = context.Spawn(Props.FromProducer(() => new TodoActor()));
+						context.ReenterAfter(context.RequestAsync<Todo>(pid, m), task => {
+							context.Respond(task.Result);
+							return Task.CompletedTask;
+						});
+					}
 				break;
 			}
 			return Task.CompletedTask;

@@ -27,7 +27,8 @@
 	{
 		Todo.Status = (Models.TodoStatus)Convert.ToInt32(e.Value);
 		Console.WriteLine($"Todo {Todo.Name} updated status to {Todo.Status}");
-		var todoProto = await _protoHelper.Request(Todo);
+		@* var todoProto = await _protoHelper.Request(Todo); *@
+		var todoProto = await _protoHelper.DBRequest<Todo>(new DBEntityMessage(Todo, DBChange.Create));
 		Console.WriteLine($"Received update of {Todo.Name} from Proto - now called {todoProto.Name}");
 		Todo.Name = todoProto.Name;
 		TodoChanged.InvokeAsync(Todo);

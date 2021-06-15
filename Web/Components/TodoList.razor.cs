@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Microsoft.JSInterop;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Models;
 // using System.Collections.Specialized;
 
 namespace Web.Components
@@ -27,6 +29,10 @@ namespace Web.Components
 		protected override void OnInitialized()
 		{
 			base.OnInitialized();
+			TodoModel = new Web.ViewModels.TodoModel();
+			TodoModel.Todos = new List<Todo>();
+			TodoModel.Todos.Add(new Todo() { Name="Test", Description="Cool first task", Status=TodoStatus.New });
+			TodoModel.Todos.Add(new Todo() { Name="Second", Description="Cool second task", Status=TodoStatus.Started });
 		}
 
 		public void CreateTodo()

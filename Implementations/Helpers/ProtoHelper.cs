@@ -33,30 +33,16 @@ namespace Implementations
 		{
 			_actorSystem.Root.Send(_pidSend, message);
 		}
-		public async Task<TMessage> Request<TMessage>(TMessage message)
+		public async Task<TEntity> Request<TEntity>(TEntity entity)
 		{
-			var item = await _actorSystem.Root.RequestAsync<TMessage>(_pidRequest, message);
+			var item = await _actorSystem.Root.RequestAsync<TEntity>(_pidRequest, entity);
 			return item;
 		}
 
-		public Task<TEntity> CreateRequest<TEntity>(CreateEntity<TEntity> message)
+		public async Task<TEntity> DBRequest<TEntity>(DBEntityMessage message)
 		{
-			throw new NotImplementedException();
-		}
-
-		public Task<TEntity> GetRequest<TEntity>(GetEntity<TEntity> message)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<TEntity> UpdateRequest<TMessage, TEntity>(TMessage message)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<TEntity> DeleteRequest<TMessage, TEntity>(TMessage message)
-		{
-			throw new NotImplementedException();
+			var item = await _actorSystem.Root.RequestAsync<TEntity>(_pidRequest, message);
+			return item;
 		}
 	}
 }

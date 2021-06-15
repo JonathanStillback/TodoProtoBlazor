@@ -1,0 +1,35 @@
+@namespace Web.Components
+
+@using Models
+@inject IProtoHelper _protoHelper
+
+@page "/todo/create"
+
+<form>
+	<label for="todo.name"></label>
+	<input id="todo.name" name="todo.name" type="text" @bind="@Todo.Name" />
+
+	<label for="todo.description"></label>
+	<input id="todo.description" name="todo.description" type="text" @bind="@Todo.Description" />
+
+	<input type="button" value="Save" @onclick="@((Action)(() => {OnTodoSaved();}))">
+</form>
+@code {
+	public Models.Todo Todo {get; set;}
+	@* [Parameter] public EventCallback<Models.Todo> TodoChanged { get; set; } *@
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		Todo = new Models.Todo();
+	}
+	private async void OnTodoSaved()
+	{
+		Console.WriteLine($"Todo {Todo.Name} updated status to {Todo.Status}");
+		var todoProto = await _protoHelper.DBRequest<Todo>(new DBEntityMessage(Todo, DBChange.Create));
+		Console.WriteLine($"Received update of {Todo.Name} from Proto - now called {todoProto.Name}");
+		Todo = todoProto;
+		StateHasChanged();
+	}
+
+}

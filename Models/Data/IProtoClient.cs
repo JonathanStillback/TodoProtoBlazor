@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-	public interface IProtoHelper
+	public interface IProtoClient
 	{
 		void SendMessage<TMessage>(TMessage message);
 		Task<TMessage> Request<TMessage>(TMessage message);

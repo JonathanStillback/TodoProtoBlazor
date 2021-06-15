@@ -10,14 +10,14 @@ using Proto.Router;
 
 namespace Implementations
 {
-	public class ProtoHelper : IProtoHelper
+	public class ProtoClient : IProtoClient
 	{
 		private readonly ActorSystem _actorSystem;
 		private readonly string _actorSendName;
 		private readonly string _actorRequestName;
 		private PID _pidSend;
 		private PID _pidRequest;
-		public ProtoHelper(ActorSystem actorSystem)
+		public ProtoClient(ActorSystem actorSystem)
 		{
 			_actorSystem = actorSystem;
 			_actorSendName = "ProtoSendDispatcher";

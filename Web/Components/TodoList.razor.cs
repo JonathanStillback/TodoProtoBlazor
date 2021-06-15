@@ -21,6 +21,8 @@ namespace Web.Components
 		public Web.ViewModels.TodoModel TodoModel {get; set;}
 		[Inject]
 		IJSRuntime JS {get; set;}
+		[Inject]
+		IProtoClient _protoClient {get; set;}
 
 		// public EventCallback<Models.Todo> TodoChanged { get; set; }
 

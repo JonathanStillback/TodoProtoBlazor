@@ -30,7 +30,7 @@ namespace Configurations
         {
             services.AddSingleton<IDBProvider<Todo>, SqliteDBProvider<Todo>>();
             services.AddSingleton(serviceProvider => new ActorSystem().WithServiceProvider(serviceProvider));
-            services.AddSingleton<IProtoHelper, ProtoHelper>();
+            services.AddSingleton<IProtoClient, ProtoClient>();
             // services.AddTransient<TodoActor>();
 
             services.AddControllersWithViews();

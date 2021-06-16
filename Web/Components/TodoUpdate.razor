@@ -2,6 +2,7 @@
 
 @using Models
 @inject IProtoClient _protoClient
+@inject INotifierStateService<Todo> _notifierStateService
 
 @page "/todo/create"
 
@@ -29,6 +30,11 @@
 		var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(Todo, DBChange.Create));
 		Console.WriteLine($"Received update of {Todo.Name} from Proto - now called {todoProto.Name}");
 		Todo = todoProto;
+
+		Console.WriteLine("Trigging event for added todo item");
+		Console.WriteLine($"Item count: {_notifierStateService.ValuesList.Count}");
+		await _notifierStateService.AddTolist(Todo);
+	
 		StateHasChanged();
 	}
 

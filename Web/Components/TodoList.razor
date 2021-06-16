@@ -1,6 +1,16 @@
 @namespace Web.Components
-@using Microsoft.AspNetCore.Components.Forms;
-@using Web.Components;
+@using Microsoft.AspNetCore.Components.Forms
+@using Web.Components
+@using Models
+@using Implementations
+@using Microsoft.JSInterop
+@using System.Threading.Tasks
+@using System.Collections.Generic
+
+@inject IJSRuntime JS
+@inject IProtoClient _protoClient
+
+@inject INotifierStateService<Todo> _notifierStateService
 
 @page "/"
 
@@ -8,13 +18,24 @@
 
 <input type="button" @onclick="CreateTodo" value="Add" />
 
-<a href="/todo/create">Add Todo</a>
+<a href="/todo/create" @bind="@NewTodo">Add Todo</a>
 
 <ul class="tasklist">
-@for (var i = 0; i<TodoModel.Todos.Count; ++i)
+@foreach (var todo in _notifierStateService.ValuesList)
 {
 	<li>
-		<TodoItem @bind-Todo="@TodoModel.Todos[i]" />
+		<ul>
+			<li>@todo.Name</li>
+			<li>@todo.Description</li>
+			<li>
+				<select value="@((int)todo.Status)" @onchange="@((Action<ChangeEventArgs>)(e => {OnTodoStatusChanged(e, @todo);}))">
+					@foreach (int val in Enum.GetValues<Models.TodoStatus>())
+					{
+						<option value="@val">@((Models.TodoStatus)val)</option>
+					}
+				</select>
+			</li>
+		</ul>
 	</li>
 }
 </ul>
@@ -22,5 +43,58 @@
 Info: @hello
 
 @code {
+		[Parameter]
+		public Web.ViewModels.TodoModel TodoModel {get; set;}
 
+		public Models.Todo NewTodo {get; set;}
+		public string hello = "";
+
+		protected override void OnInitialized()
+		{
+			base.OnInitialized();
+			TodoModel = new Web.ViewModels.TodoModel();
+			TodoModel.Todos = new List<Todo>();
+			TodoModel.Todos.Add(new Todo() { Name="Test", Description="Cool first task", Status=TodoStatus.New });
+			TodoModel.Todos.Add(new Todo() { Name="Second", Description="Cool second task", Status=TodoStatus.Started });
+
+			Console.WriteLine("Initializing list and Subscribing to Notifier State Service");
+
+			_notifierStateService.Subscribe(TodoNotified);
+			Console.WriteLine($"Item count: {_notifierStateService.ValuesList.Count}");
+		}
+
+		public Task TodoNotified()
+		{
+			Console.WriteLine("Todo notified in list");
+			Console.WriteLine($"Item count: {_notifierStateService.ValuesList.Count}");
+			return Task.CompletedTask;
+		}
+
+		public void CreateTodo()
+		{
+			Console.WriteLine("Hello from CreateTodo");
+			JS.InvokeVoidAsync("console.log", "Hello from Blazor");
+			//JS.InvokeVoidAsync("alert", "Hello from from alert");
+			hello = "clicked button";
+		}
+
+		private async void OnTodoStatusChanged(ChangeEventArgs e, Todo todo)
+		{
+			todo.Status = (Models.TodoStatus)Convert.ToInt32(e.Value);
+			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status}");
+			var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(todo, DBChange.Create));
+			Console.WriteLine($"Received update of {todo.Name} from Proto - now called {todoProto.Name}");
+			todo.Name = todoProto.Name;
+			StateHasChanged();
+		}
+
+		private void OnTodoChanged(Models.Todo todo)
+		{
+			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status}");
+		}
+		private void UpdateTodo()
+		{}
+
+		private void DeleteTodo()
+		{}
 }

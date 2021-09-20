@@ -14,7 +14,8 @@ namespace Models
 		Create,
 		Get,
 		Update,
-		Delete
+		Delete,
+		GetAll
 	}
 
 }

@@ -6,7 +6,7 @@ namespace Models
 {
 	public interface INotifierStateService<T>
 	{
-			public IReadOnlyList<T> ValuesList {get;}
+			public List<T> ValuesList {get;}
 
 			Task AddTolist(T value);
 

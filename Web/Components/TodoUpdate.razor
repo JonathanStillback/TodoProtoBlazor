@@ -7,11 +7,10 @@
 @page "/todo/create"
 
 <form>
-	<label for="todo.name"></label>
-	<input id="todo.name" name="todo.name" type="text" @bind="@Todo.Name" />
-
-	<label for="todo.description"></label>
-	<input id="todo.description" name="todo.description" type="text" @bind="@Todo.Description" />
+	<label for="todo.name">Title</label><br>
+	<input id="todo.name" name="todo.name" type="text" @bind="@Todo.Name" /><br>
+	<label for="todo.description">Description</label><br>
+	<input id="todo.description" name="todo.description" type="text" @bind="@Todo.Description" /><br><br>
 
 	<input type="button" value="Save" @onclick="@((Action)(() => {OnTodoSaved();}))">
 </form>

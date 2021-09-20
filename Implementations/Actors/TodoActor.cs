@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Models;
 using Proto;
 
@@ -7,6 +8,12 @@ namespace Implementations
 {
 	public class TodoActor : IActor
 	{
+		private readonly IDBProvider<Todo> _dbProvider;
+
+		public TodoActor(IDBProvider<Todo> dbProvider)
+		{
+			_dbProvider = dbProvider;
+		}
 		//the receive function, invoked by the runtime whenever a message
 		//should be processed
 		public Task ReceiveAsync(IContext context)
@@ -18,9 +25,20 @@ namespace Implementations
 					todo.Name = "Proto " + todo.Name;
 					context.Respond(todo);
 				break;
-				case DBEntityMessage m when m.Entity is Todo t && m.dbChange == DBChange.Create:
-					Console.WriteLine("Handled by Proto todo create");
-					context.Respond(t);
+				case DBEntityMessage m when m.Entity is Todo t:
+					Console.WriteLine($"Todo {m.dbChange} handled by Proto");
+					switch(m.dbChange)
+					{
+						case DBChange.Create:
+							var id = _dbProvider.Create(t);
+							t.Id = id;
+							context.Respond(t);
+						break;
+						case DBChange.GetAll:
+							var todos = _dbProvider.GetAll();
+							context.Respond(todos);
+						break;
+					}
 				break;
 			};
 			return Task.CompletedTask;

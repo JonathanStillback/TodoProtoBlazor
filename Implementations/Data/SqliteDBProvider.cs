@@ -7,13 +7,18 @@ using Microsoft.Data.Sqlite;
 using System.Reflection;
 using Dapper;
 using Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Implementations
 {
     public class SqliteDBProvider<T> : IDBProvider<T>
     {
-        public SqliteDBProvider()
+		private readonly IConfiguration _config;
+
+		public SqliteDBProvider(IConfiguration config)
         {
+            _config = config;
             this.CreateTables();
             // this.RecreateTables();
         }
@@ -58,12 +63,12 @@ namespace Implementations
             var table = datatype.Name.ToLower();
             var sql = $"select * from {table} {where}";
 
-            var items = new List<T>();
+            IEnumerable<T> items = new List<T>();
             try
             {
                 using(var conn = Connection())
                 {
-                    items = conn.Query<T>(sql, param).ToList();
+                    items = conn.Query<T>(sql, param);
                 }
             }
             catch(Exception ex)
@@ -166,6 +171,8 @@ namespace Implementations
                 case "boolean":
                     return item.ToString().ToLower() == "true" ? 1 : 0;
                 default:
+                    if (item == null)
+                        return "''";
                 return item;
             }
         }
@@ -211,12 +218,13 @@ namespace Implementations
         protected IDbConnection Connection()
         {
             // var connStr = "Data Source=db/mydb.db;Version=3;New=True;Cache Size=3000;UTF8Encoding=True;Journal Mode=Off;Synchronous=Off;";
-            var dbPath = Directory.GetCurrentDirectory() + "..\\db";
+            // var dbPath = Directory.GetCurrentDirectory() + "\\..\\db";
+            var dbPath = _config.GetSection("DatabasePath").Value;
             var connStr = "Data Source=" + dbPath + "\\db.sqlite;";
             try
             {
                 if (!Directory.Exists(dbPath))
-                        Directory.CreateDirectory(dbPath);
+                    Directory.CreateDirectory(dbPath);
                 var conn = new SqliteConnection(connStr);
                 conn.Open();
                 return conn;

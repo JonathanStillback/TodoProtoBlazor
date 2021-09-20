@@ -32,7 +32,10 @@ namespace Configurations
             services.AddSingleton(serviceProvider => new ActorSystem().WithServiceProvider(serviceProvider));
             services.AddSingleton<IProtoClient, ProtoClient>();
             services.AddScoped<INotifierStateService<Todo>, NotifierStateService<Todo>>();
-            // services.AddTransient<TodoActor>();
+
+            services.AddTransient<DispatcherSendActor>();
+            services.AddTransient<DispatcherRequestActor>();
+            services.AddTransient<TodoActor>();
 
             services.AddControllersWithViews();
             services.AddServerSideBlazor();

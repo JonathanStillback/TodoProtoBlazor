@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Proto.DependencyInjection;
 using Proto.Extensions;
 using Proto.Router;
+using Microsoft.Extensions.Configuration;
 
 namespace Implementations
 {
@@ -23,9 +24,9 @@ namespace Implementations
 			_actorSendName = "ProtoSendDispatcher";
 			_actorRequestName = "ProtoRequestDispatcher";
 
-			var props = Props.FromProducer(() => new DispatcherActor());
+			var props = _actorSystem.DI().PropsFor<DispatcherSendActor>();
 			_pidSend = _actorSystem.Root.SpawnNamed(props, _actorSendName);
-			props = Props.FromProducer(() => new DispatcherActor(true));
+			props = _actorSystem.DI().PropsFor<DispatcherRequestActor>();
 			_pidRequest = _actorSystem.Root.SpawnNamed(props, _actorRequestName);
 		}
 

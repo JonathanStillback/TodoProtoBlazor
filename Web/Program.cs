@@ -15,14 +15,16 @@ namespace Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            HostBuilderConfiguration.BuildHost(args, typeof(Program).GetTypeInfo().Assembly.FullName).Run();
+            // CreateHostBuilder(args).Build().Run();
         }
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>() 
-                    .UseSetting(WebHostDefaults.ApplicationKey, typeof(Program).GetTypeInfo().Assembly.FullName); // Ignore the startup class assembly as the "entry point" and instead point it to this app;
-                });
+        // public static IHostBuilder CreateHostBuilder(string[] args) =>
+        //     Host.CreateDefaultBuilder(args)
+        //         .ConfigureWebHostDefaults(webBuilder =>
+        //         {
+        //             webBuilder
+        //             .UseStartup<Startup>() 
+        //             .UseSetting(WebHostDefaults.ApplicationKey, typeof(Program).GetTypeInfo().Assembly.FullName); // Ignore the startup class assembly as the "entry point" and instead point it to this app;
+        //         });
     }
 }

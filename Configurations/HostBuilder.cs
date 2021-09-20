@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Implementations;
@@ -14,11 +15,36 @@ namespace Configurations
 {
 	public class HostBuilderConfiguration
 	{
-		public static IHostBuilder CreateHostBuilder(string[] args) =>
-		Host.CreateDefaultBuilder(args)
-		.ConfigureWebHostDefaults(webBuilder =>
+		public static IHost BuildHost(string[] args, string assemblyName)
 		{
-				webBuilder.UseStartup<Startup>();
-		});
+			return Host.CreateDefaultBuilder(args)
+			.ConfigureAppConfiguration((hostingContext, config) =>
+			{
+				var defaultContentPath = Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, "appsettings.json");
+				var newContentPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+				config
+				// Todo: Check this
+				// Works for development (and production?)
+				.AddJsonFile(newContentPath, 
+						optional: true, reloadOnChange: true
+				)
+				// // For production
+				// .AddJsonFile("appsettings.json", 
+				// 		optional: true, reloadOnChange: true
+				// );
+
+				;
+			})
+			.ConfigureWebHostDefaults(webBuilder =>
+			{
+				webBuilder
+				.UseStartup<Startup>()
+				.UseSetting(WebHostDefaults.ApplicationKey, assemblyName);
+			}).Build();
+		}
+		// public static IWebHostBuilder CreateWebHostBuilder()
+		// {
+
+		// }
 	}
 }

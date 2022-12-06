@@ -158,7 +158,7 @@ namespace Implementations
 
         protected object FormatValue(PropertyInfo p, object item)
         {
-            switch (p.PropertyType.Name.ToLower())
+            switch (p.PropertyType.BaseType.Name.ToLower() == "enum" ? "enum" : p.PropertyType.Name.ToLower())
             {
                 case "string":
                     return $"'{item}'";
@@ -170,16 +170,18 @@ namespace Implementations
                 case "bool":
                 case "boolean":
                     return item.ToString().ToLower() == "true" ? 1 : 0;
-                default:
+                case "enum":
+                    return Convert.ChangeType(item, Enum.GetUnderlyingType(p.PropertyType));
+				default:
                     if (item == null)
                         return "''";
-                return item;
+                return $"'{item}'";
             }
         }
 
         protected string MapDatatype(PropertyInfo p)
         {
-            switch (p.PropertyType.Name.ToLower())
+            switch (p.PropertyType.BaseType.Name.ToLower() == "enum" ? "enum" : p.PropertyType.Name.ToLower())
             {
                 case "string":
                     return "text";
@@ -191,14 +193,16 @@ namespace Implementations
                 case "bool":
                 case "boolean":
                     return "boolean";
-                default:
+                case "enum":
+					return "integer";
+				default:
                 return "text";
             }
         }
 
         protected string MapDatatypeValue(PropertyInfo p)
         {
-            switch (p.PropertyType.Name.ToLower())
+            switch (p.PropertyType.BaseType.Name.ToLower() == "enum" ? "enum" : p.PropertyType.Name.ToLower())
             {
                 case "string":
                     return "''";
@@ -210,7 +214,9 @@ namespace Implementations
                 case "bool":
                 case "boolean":
                     return "0";
-                default:
+                case "enum":
+					return "0";
+				default:
                 return "''";
             }
         }

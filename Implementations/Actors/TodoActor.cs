@@ -34,6 +34,10 @@ namespace Implementations
 							t.Id = id;
 							context.Respond(t);
 						break;
+						case DBCommand.Update:
+							var todo = _dbProvider.Update(t);
+							context.Respond(todo);
+						break;
 						case DBCommand.GetAll:
 							var todos = _dbProvider.GetAll();
 							context.Respond(todos);

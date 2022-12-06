@@ -52,7 +52,7 @@ namespace Web.Components
 		private async void OnTodoStatusChanged(ChangeEventArgs e, Todo todo)
 		{
 			todo.Status = (Models.TodoStatus)Convert.ToInt32(e.Value);
-			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status}");
+			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status} (from TodoListExample OnTodoStatus)");
 			var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(todo, DBCommand.Create));
 			Console.WriteLine($"Received update of {todo.Name} from Proto - now called {todoProto.Name}");
 			todo.Name = todoProto.Name;
@@ -61,7 +61,7 @@ namespace Web.Components
 
 		private void OnTodoChanged(Models.Todo todo)
 		{
-			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status}");
+			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status} (from TodoListExample OnTodo)");
 		}
 		private void UpdateTodo()
 		{}

@@ -25,7 +25,7 @@
 	}
 	private async void OnTodoSaved()
 	{
-		Console.WriteLine($"Todo {Todo.Name} updated status to {Todo.Status}");
+		Console.WriteLine($"Todo {Todo.Name} updated status to {Todo.Status} (from TodoUpdate)");
 		var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(Todo, DBCommand.Create));
 		Console.WriteLine($"Received update of {Todo.Name} from Proto - now called {todoProto.Name}");
 		Todo = todoProto;

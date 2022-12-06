@@ -45,5 +45,16 @@ namespace Implementations
 			var item = await _actorSystem.Root.RequestAsync<TEntity>(_pidRequest, message);
 			return item;
 		}
+
+		// public async Task<TEntity> DBRequest<TEntity>(DBCommand command)
+		// {
+		// 	throw new NotImplementedException();
+		// }
+
+		public async Task<TEntity> DBRequest<TEntity>(DBRetrievalMessage message)
+		{
+			var item = await _actorSystem.Root.RequestAsync<TEntity>(_pidRequest, message);
+			return item;
+		}
 	}
 }

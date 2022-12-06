@@ -37,7 +37,7 @@ namespace Implementations
 					if (m.Entity is Todo todo)
 					{
 						pid = context.Spawn(_actorSystem.DI().PropsFor<TodoActor>());
-						if (m.dbChange == DBChange.GetAll)
+						if (m.dbCommand == DBCommand.GetAll)
 						{
 							context.ReenterAfter(context.RequestAsync<Todo>(pid, m), task => {
 								context.Respond(task.Result);

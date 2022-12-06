@@ -53,7 +53,7 @@ namespace Web.Components
 		{
 			todo.Status = (Models.TodoStatus)Convert.ToInt32(e.Value);
 			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status}");
-			var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(todo, DBChange.Create));
+			var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(todo, DBCommand.Create));
 			Console.WriteLine($"Received update of {todo.Name} from Proto - now called {todoProto.Name}");
 			todo.Name = todoProto.Name;
 			StateHasChanged();

@@ -82,8 +82,8 @@ Info: @hello
 		{
 			todo.Status = (Models.TodoStatus)Convert.ToInt32(e.Value);
 			Console.WriteLine($"Todo {todo.Name} updated status to {todo.Status.ToString()}");
-			var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(todo, DBChange.Create));
-			Console.WriteLine($"Received update of {todo.Name} from Proto - now called {todoProto.Name}");
+			var todoProto = await _protoClient.DBRequest<Todo>(new DBEntityMessage(todo, DBCommand.Update));
+			@* Console.WriteLine($"Received update of {todo.Name} from Proto - now called {todoProto.Name}"); *@
 			todo.Name = todoProto.Name;
 			StateHasChanged();
 		}

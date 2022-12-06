@@ -26,15 +26,15 @@ namespace Implementations
 					context.Respond(todo);
 				break;
 				case DBEntityMessage m when m.Entity is Todo t:
-					Console.WriteLine($"Todo {m.dbChange} handled by Proto");
-					switch(m.dbChange)
+					Console.WriteLine($"Todo {m.dbCommand} handled by Proto");
+					switch(m.dbCommand)
 					{
-						case DBChange.Create:
+						case DBCommand.Create:
 							var id = _dbProvider.Create(t);
 							t.Id = id;
 							context.Respond(t);
 						break;
-						case DBChange.GetAll:
+						case DBCommand.GetAll:
 							var todos = _dbProvider.GetAll();
 							context.Respond(todos);
 						break;

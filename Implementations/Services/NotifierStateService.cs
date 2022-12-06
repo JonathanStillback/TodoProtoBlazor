@@ -10,14 +10,17 @@ namespace Implementations
 	{
 		private readonly List<T> values = new List<T>();
 		private readonly IDBProvider<T> _dbProvider;
+		private readonly IProtoClient _protoClient;
 
 		public List<T> ValuesList => values;
 
-			public NotifierStateService(IDBProvider<T> dbProvider)
+			public NotifierStateService(IDBProvider<T> dbProvider, IProtoClient protoClient)
 			{
 				Console.WriteLine("Initializing new NotifierStateService");
 				_dbProvider = dbProvider;
+				_protoClient = protoClient;
 
+				_protoClient.DBRequest<T>(new DBRetrievalMessage(DBCommand.GetAll));
 				values = _dbProvider.GetAll().ToList();
 			}
 
